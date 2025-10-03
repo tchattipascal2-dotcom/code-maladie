@@ -1,4 +1,4 @@
 
 Flask==2.3.3
 waitress==3.0.2
-openai==1.27.9
+openai
