@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code ↔ Maladie | Interface Médicale</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(120, 119, 198, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(120, 119, 198, 0.15),
+                0 10px 30px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            padding: 45px;
+            max-width: 750px;
+            width: 100%;
+            animation: slideIn 0.6s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .header-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(120, 119, 198, 0.2));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 2.6em;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #7877C6 0%, #4A4A8C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 1.15em;
+            font-weight: 500;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            color: #4A5568;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+            letter-spacing: -0.2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            font-size: 1.05em;
+            transition: all 0.3s ease;
+            background: #F7FAFC;
+            color: #2D3748;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #7877C6;
+            background: white;
+            box-shadow: 0 5px 15px rgba(120, 119, 198, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #A0AEC0;
+            font-size: 1.2em;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #7877C6 0%, #5A59A3 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.15em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(120, 119, 198, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(120, 119, 198, 0.5);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            margin-top: 40px;
+            padding: 35px 30px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #edf0ff 100%);
+            border: 1px solid rgba(120, 119, 198, 0.15);
+            box-shadow: 0 10px 30px rgba(5, 6, 7, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #7877C6 0%, #5A59A3 100%);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: #4A4A8C;
+            font-size: 1.6em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .result-icon {
+            font-size: 1.4em;
+        }
+
+        .result-content {
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            font-weight: 600;
+            font-size: 1.2em;
+            line-height: 1.8;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(120, 119, 198, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            color: #2D3748;
+        }
+
+        .result-content:empty::before {
+            content: "Aucun résultat pour le moment...";
+            color: rgba(120, 119, 198, 0.5);
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .result-content.loading {
+            background: linear-gradient(135deg, #FFD89B 0%, #19547B 100%);
+            color: white;
+            animation: fadeIn 0.5s ease-in, shimmer 1.5s infinite;
+        }
+
+        .result-content.success {
+            background: linear-gradient(135deg, #7877C6 0%, #5A59A3 100%);
+            color: white;
+            animation: fadeIn 0.5s ease-in, pulse 0.5s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(120, 119, 198, 0.3);
+        }
+
+        .result-content.error {
+            background: linear-gradient(135deg, #E53E3E 0%, #C53030 100%);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.98);
+            }
+            50% {
+                transform: scale(1.01);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.85;
+            }
+        }
+
+        .examples {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(120, 119, 198, 0.08);
+            border-radius: 14px;
+            font-size: 0.95em;
+            border: 1px solid rgba(120, 119, 198, 0.1);
+        }
+
+        .examples h3 {
+            color: #4A4A8C;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+            font-weight: 600;
+        }
+
+        .examples ul {
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .examples li {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #7877C6;
+            border: 1px solid rgba(120, 119, 198, 0.2);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .examples li:hover {
+            background: #7877C6;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(120, 119, 198, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #A0AEC0;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .header-icon {
+                font-size: 3em;
+            }
+        }
+    </style>
+    <script>
+        async function submitForm(e) {
+            e.preventDefault();
+            const query = document.getElementById("query").value;
+            const resultDiv = document.getElementById("result");
+            
+            resultDiv.className = "result-content loading";
+            resultDiv.textContent = " Recherche en cours...";
+
+            try {
+                const res = await fetch("/api/lookup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const data = await res.json();
+                resultDiv.className = "result-content success";
+                resultDiv.textContent = data.result;
+            } catch (err) {
+                resultDiv.className = "result-content error";
+                resultDiv.textContent = " Erreur : " + err.message;
+            }
+        }
+        
+        // Ajout de la fonctionnalité de clic sur les exemples
+        document.addEventListener('DOMContentLoaded', function() {
+            const examples = document.querySelectorAll('.examples li');
+            const queryInput = document.getElementById('query');
+            
+            examples.forEach(example => {
+                example.addEventListener('click', function() {
+                    queryInput.value = this.textContent;
+                    queryInput.focus();
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-icon"></span>
+            <h1>Code ↔ Maladie</h1>
+            <p class="subtitle">Recherchez une maladie par son code ou un code par son nom</p>
+        </div>
+        
+        <form onsubmit="submitForm(event)">
+            <div class="form-group">
+                <label for="query">Entrez un code ou une maladie :</label>
+                <div class="input-wrapper">
+                    <input type="text" id="query" name="query" placeholder="Ex: A00 ou Choléra" required>
+                    <span class="input-icon"></span>
+                </div>
+            </div>
+            <button type="submit">
+                <span>🔎</span>
+                <span>Rechercher</span>
+            </button>
+        </form>
+        
+        <div class="result-section">
+            <div class="result-header">
+                <h2>
+                    <span class="result-icon">📋</span>
+                    <span>Résultat :</span>
+                </h2>
+            </div>
+            <div id="result" class="result-content"></div>
+        </div>
+        
+        <div class="examples">
+            <h3>Exemples de recherche :</h3>
+            <ul>
+                <li>A00</li>
+                <li>Choléra</li>
+                <li>J45</li>
+                <li>Asthme</li>
+                <li>E11</li>
+                <li>Diabète</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Interface médicale • Conçu pour les professionnels de santé</strong></p>
+  
+        </div>
+
+    </div>
+</body>
+</html>
